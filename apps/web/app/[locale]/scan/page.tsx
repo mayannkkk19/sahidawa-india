@@ -21,7 +21,7 @@ import { PageHeader } from "../components/PageHeader";
 import { toast } from "sonner";
 import Footer from "../components/Footer";
 import { ExpiryBadge } from "@/components/scanner/ExpiryBadge";
-import { verifyMedicine, VerifyResult, VerifiedMedicine } from "@/lib/api";
+import { verifyMedicine, VerifyResult, VerifiedMedicine, API_BASE } from "@/lib/api";
 
 function formatExpiryForBadge(isoDate: string | null | undefined): string | undefined {
     if (!isoDate) return undefined;
@@ -345,6 +345,8 @@ export default function ScanPage() {
     const [batchInput, setBatchInput] = useState("");
     const [verifyResult, setVerifyResult] = useState<VerifyResult | null>(null);
     const [verifyError, setVerifyError] = useState<string | null>(null);
+    const [ocrText, setOcrText] = useState<string | null>(null);
+    const [ocrConfidence, setOcrConfidence] = useState<number | null>(null);
 
     const handleVerify = useCallback(async (batch: string) => {
         if (!batch.trim()) {
@@ -389,7 +391,7 @@ export default function ScanPage() {
 
     const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
-    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
 
@@ -402,13 +404,52 @@ export default function ScanPage() {
         const reader = new FileReader();
         reader.onloadend = () => {
             setUploadedImage(reader.result as string);
-            if (!batchInput.trim()) {
-                toast.error("Please enter a batch number before uploading");
-                return;
-            }
-            handleVerify(batchInput);
         };
         reader.readAsDataURL(file);
+
+        setIsScanning(true);
+        setShowResult(false);
+        setVerifyResult(null);
+        setVerifyError(null);
+        setOcrText(null);
+        setOcrConfidence(null);
+
+        try {
+            const formData = new FormData();
+            formData.append("file", file);
+
+            const res = await fetch(`${API_BASE}/api/v1/scan/extract`, {
+                method: "POST",
+                body: formData,
+            });
+
+            if (!res.ok) {
+                if (res.status === 503) {
+                    toast.warning("OCR service is currently unavailable. Please verify manually.");
+                } else {
+                    toast.error("Failed to extract text from image.");
+                }
+                setIsScanning(false);
+                return;
+            }
+
+            const data = (await res.json()) as { text?: string; confidence?: number };
+            if (data.text) {
+                setOcrText(data.text);
+                setOcrConfidence(data.confidence ?? 0);
+                toast.success("OCR extraction complete!");
+
+                if (batchInput.trim()) {
+                    handleVerify(batchInput);
+                }
+            } else {
+                toast.warning("No clear text found in image.");
+            }
+        } catch (err) {
+            toast.warning("OCR service is currently unavailable. Please verify manually.");
+        } finally {
+            setIsScanning(false);
+        }
     };
 
     const handleScanAgain = () => {
@@ -418,6 +459,8 @@ export default function ScanPage() {
         setVerifyResult(null);
         setVerifyError(null);
         setBatchInput("");
+        setOcrText(null);
+        setOcrConfidence(null);
     };
 
     const handleDismissResult = () => {
@@ -558,6 +601,22 @@ export default function ScanPage() {
                     </div>
                 )}
             </div>
+
+            {ocrText && (
+                <div className="mx-auto my-4 w-full max-w-md rounded-2xl border border-emerald-500/30 bg-slate-900/90 p-4 text-xs backdrop-blur-md">
+                    <div className="mb-2 flex items-center justify-between border-b border-white/10 pb-2">
+                        <span className="font-bold text-emerald-400">OCR Extracted Text Debug Log</span>
+                        {ocrConfidence !== null && (
+                            <span className="rounded bg-emerald-500/20 px-2 py-0.5 font-mono text-emerald-300">
+                                Confidence: {Math.round(ocrConfidence * 100)}%
+                            </span>
+                        )}
+                    </div>
+                    <pre className="max-h-32 overflow-y-auto whitespace-pre-wrap font-mono text-slate-300">
+                        {ocrText}
+                    </pre>
+                </div>
+            )}
 
             <div className="flex flex-col items-center gap-6 bg-gradient-to-t from-black to-transparent p-8">
                 <form onSubmit={handleBatchSubmit} className="flex w-full max-w-sm gap-2">
