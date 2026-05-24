@@ -18,6 +18,9 @@ BEGIN
       soundex(brand_name) = soundex(target_name)
       OR similarity(brand_name, target_name) > 0.85
     )
+  ORDER BY 
+    CASE WHEN soundex(brand_name) = soundex(target_name) THEN 1 ELSE 0 END DESC,
+    similarity(brand_name, target_name) DESC
   LIMIT 5;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
