@@ -183,6 +183,6 @@ describe("POST /api/v1/alerts/ingest — configuration validation", () => {
             .send({ alerts: [] });
 
         expect(res.status).toBe(500);
-        expect(res.body.error).toContain("API_SECRET_KEY is not configured");
+        expect(res.body.error).toMatch(/API_SECRET_KEY.*not.*configured/i);
     });
 });

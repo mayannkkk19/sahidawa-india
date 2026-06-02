@@ -286,10 +286,10 @@ router.post("/extract", (req: Request, res: Response) => {
 
             // Expiry parsing
             const expiryPatterns = [
-                /(?:EXP\.?(?:\s*DATE)?|EXPIRY(?:\s*DATE)?)\s*[:\-\.\s]*([0-9]{2})\s*[\/\-]\s*([0-9]{4})/i,
-                /(?:EXP\.?(?:\s*DATE)?|EXPIRY(?:\s*DATE)?)\s*[:\-\.\s]*([0-9]{2})\s*[\/\-]\s*([0-9]{2})\b/i,
-                /\b([0-9]{2})\s*[\/\-]\s*([0-9]{4})\b/,
-                /\b([0-9]{2})\s*[\/\-]\s*([0-9]{2})\b/,
+                /(?:EXP\.?(?:\s*DATE)?|EXPIRY(?:\s*DATE)?)\s*[:\-\.\s]*(0[1-9]|1[0-2])\s*[\/\-]\s*([0-9]{4})/i,
+                /(?:EXP\.?(?:\s*DATE)?|EXPIRY(?:\s*DATE)?)\s*[:\-\.\s]*(0[1-9]|1[0-2])\s*[\/\-]\s*([0-9]{2})\b/i,
+                /\b(0[1-9]|1[0-2])\s*[\/\-]\s*([0-9]{4})\b/,
+                /\b(0[1-9]|1[0-2])\s*[\/\-]\s*([0-9]{2})\b/,
             ];
             let parsedExpiry: string | null = null;
             for (const pattern of expiryPatterns) {
