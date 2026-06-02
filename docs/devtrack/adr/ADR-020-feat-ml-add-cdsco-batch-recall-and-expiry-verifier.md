@@ -14,15 +14,16 @@ The `apps/web` frontend was updated to directly call this new ML service endpoin
 
 ## Alternatives Considered
 
-| Alternative | Why Rejected |
-|---|---|
-| **Implement verification in existing Node API** | The existing Node API was described as "unavailable" and lacked a functional verification engine. Moving this critical feature to a new, dedicated ML microservice aligned with the Phase 3 roadmap for ML integration and provided a fresh, robust implementation path. |
+| Alternative                                                | Why Rejected                                                                                                                                                                                                                                                                                                                                                 |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Implement verification in existing Node API**            | The existing Node API was described as "unavailable" and lacked a functional verification engine. Moving this critical feature to a new, dedicated ML microservice aligned with the Phase 3 roadmap for ML integration and provided a fresh, robust implementation path.                                                                                     |
 | **Create a separate, dedicated verification microservice** | While a dedicated service could offer clearer separation of concerns, the current scope of verification logic was deemed suitable for inclusion within the `apps/ml` microservice, which was already part of the "medicine verification" roadmap. This avoided the overhead of deploying and managing an additional microservice for initial implementation. |
-| **Client-side verification by downloading CDSCO data** | Downloading the entire `medicines.csv` to the client for local verification would introduce significant security risks (data exposure), increase initial load times due to large data size, and complicate data updates for real-time recalls or new approvals. It would also be less performant for large datasets and less reliable for dynamic checks. |
+| **Client-side verification by downloading CDSCO data**     | Downloading the entire `medicines.csv` to the client for local verification would introduce significant security risks (data exposure), increase initial load times due to large data size, and complicate data updates for real-time recalls or new approvals. It would also be less performant for large datasets and less reliable for dynamic checks.    |
 
 ## Consequences
 
 **Positive:**
+
 - Provided a complete, end-to-end functional medicine verification feature for SahiDawa.
 - Directly addressed the critical problem of fake/substandard medicines, enhancing citizen trust and safety.
 - Aligned with the Phase 3 roadmap for the ML microservice and the core mission of CDSCO verification.
@@ -30,6 +31,7 @@ The `apps/web` frontend was updated to directly call this new ML service endpoin
 - Established a clear, structured API for medicine batch verification.
 
 **Trade-offs:**
+
 - Introduced a new direct dependency from the `apps/web` frontend to the `apps/ml` microservice, increasing inter-service coupling.
 - Reliance on a static `data/seeds/medicines.csv` file implies a need for a robust and automated mechanism for updating this seed data to ensure accuracy and currency of verification results.
 - Expanded the scope of the `apps/ml` service to include data lookup and business logic that is not strictly machine learning, potentially blurring its primary focus.
