@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
     AlertCircle,
     Heart,
@@ -13,6 +13,8 @@ import {
     Hospital,
     Pill,
     Navigation,
+    Share2,
+    Check,
 } from "lucide-react";
 
 import type { HeatmapMode, Pharmacy } from "./PharmacyMap";
@@ -60,6 +62,48 @@ function PharmacyPanelRow({
 
     // ✅ FIXED: Proper template string token usage ($) and nested interface paths applied
     const directionsUrl = `https://www.google.com/maps/search/?api=1&query=${pharmacy.coordinates.lat},${pharmacy.coordinates.lng}`;
+
+    const [shareFeedback, setShareFeedback] = useState<"none" | "shared" | "copied">("none");
+
+    const handleShare = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+
+        const shareData = {
+            title: pharmacy.name,
+            text: `${pharmacy.name}${pharmacy.address ? ` - ${pharmacy.address}` : ""}`,
+            url: `https://www.google.com/maps/search/?api=1&query=${pharmacy.coordinates.lat},${pharmacy.coordinates.lng}`,
+        };
+
+        const fallbackCopy = async () => {
+            const textToCopy = `${pharmacy.name}${
+                pharmacy.address ? `\nAddress: ${pharmacy.address}` : ""
+            }\nLocation: https://www.google.com/maps/search/?api=1&query=${
+                pharmacy.coordinates.lat
+            },${pharmacy.coordinates.lng}`;
+
+            try {
+                await navigator.clipboard.writeText(textToCopy);
+                setShareFeedback("copied");
+                setTimeout(() => setShareFeedback("none"), 2000);
+            } catch (err) {
+                console.error("Failed to copy text: ", err);
+            }
+        };
+
+        if (navigator.share) {
+            try {
+                await navigator.share(shareData);
+                setShareFeedback("shared");
+                setTimeout(() => setShareFeedback("none"), 2000);
+            } catch (err) {
+                if ((err as Error).name !== "AbortError") {
+                    await fallbackCopy();
+                }
+            }
+        } else {
+            await fallbackCopy();
+        }
+    };
 
     return (
         <article
@@ -165,7 +209,7 @@ function PharmacyPanelRow({
             </button>
 
             {/* Action Group Footer Buttons */}
-            <div className="mt-3 ml-11 flex items-center gap-2">
+            <div className="mt-3 ml-11 flex flex-wrap gap-2">
                 <a
                     href={directionsUrl}
                     target="_blank"
@@ -175,7 +219,6 @@ function PharmacyPanelRow({
                     <Navigation size={9} className="fill-white" />
                     Directions
                 </a>
-
                 {pharmacy.phone && (
                     <a
                         href={`tel:${pharmacy.phone}`}
@@ -185,6 +228,28 @@ function PharmacyPanelRow({
                         Call
                     </a>
                 )}
+                <button
+                    type="button"
+                    onClick={handleShare}
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-(--color-surface-muted) px-2.5 py-1 text-[11px] font-medium text-(--color-text-secondary) transition-colors hover:bg-(--color-border-muted) active:bg-(--color-border-muted)"
+                >
+                    {shareFeedback === "copied" ? (
+                        <>
+                            <Check size={9} className="text-emerald-600" />
+                            Copied!
+                        </>
+                    ) : shareFeedback === "shared" ? (
+                        <>
+                            <Check size={9} className="text-emerald-600" />
+                            Shared!
+                        </>
+                    ) : (
+                        <>
+                            <Share2 size={9} className="text-emerald-600" />
+                            Share
+                        </>
+                    )}
+                </button>
             </div>
         </article>
     );
