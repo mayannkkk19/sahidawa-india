@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { ThemeToggle } from "../../[locale]/components/ThemeToggle";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
 import { ChatBubble, type Message } from "./components/ChatBubble";
@@ -358,7 +358,7 @@ export default function ChatUI() {
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <Link
-                            href="/"
+                            href={`/${locale}`}
                             className="rounded-lg p-2 text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
                             aria-label="Go to homepage"
                         >
