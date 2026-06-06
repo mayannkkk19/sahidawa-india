@@ -383,13 +383,13 @@ def send_to_make_webhook(post_text: str, pr: dict) -> None:
     import urllib.parse
     
     # Generate a dynamic Thank You banner image URL
-    banner_text = f"**GSSoC 2026 Star Contributor** <br/><br/> Huge thanks to **{pr['author']}** for scaling **SahiDawa**! 🚀"
+    banner_text = f"Huge thanks to {pr['author']} for scaling SahiDawa! 🚀"
     encoded_text = urllib.parse.quote(banner_text)
     
     raw_image_url = f"https://og-image.vercel.app/{encoded_text}.png?theme=dark&md=1&fontSize=75px"
     
-    # Add RatLoopz/SahiDawa Logo
-    ratloopz_logo = "https://github.com/RatLoopz.png"
+    # Add RatLoopz/SahiDawa Logo (Direct Avatar URL)
+    ratloopz_logo = "https://avatars.githubusercontent.com/u/244338981"
     raw_image_url += f"&images={urllib.parse.quote(ratloopz_logo, safe='')}"
     
     # Add Author Avatar
