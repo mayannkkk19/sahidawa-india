@@ -817,3 +817,4 @@
 | [#1589](https://github.com/RatLoopz/sahidawa-india/pull/1589) | 2026-06-09 | Frontend | 17 | @shashank03-dev | [View Doc](devtrack/2026-06/PR-1589-feat-admin-gate-mutation-controls-by-role.md) / [ADR](devtrack/adr/ADR-030-feat-admin-gate-mutation-controls-by-role.md) |
 | [#1641](https://github.com/RatLoopz/sahidawa-india/pull/1641) | 2026-06-11 | Frontend | 8 | @Avinash-sdbegin | [View Doc](devtrack/2026-06/PR-1641-feat-compare-add-shareable-comparison-urls.md) |
 | [#1634](https://github.com/RatLoopz/sahidawa-india/pull/1634) | 2026-06-11 | Frontend | 13 | @hrx01-dev | [View Doc](devtrack/2026-06/PR-1634-feature-add-date-range-and-status-filters-to-csv-s.md) |
+| [#1640](https://github.com/RatLoopz/sahidawa-india/pull/1640) | 2026-06-12 | Backend | 73 | @jamunatg2006-sys | [View Doc](devtrack/2026-06/PR-1640-feat-implement-redis-tiered-caching-and-cache-warm.md) / [ADR](devtrack/adr/ADR-031-feat-implement-redis-tiered-caching-and-cache-warm.md) |
