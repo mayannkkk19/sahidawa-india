@@ -36,13 +36,13 @@ The implementation for the password visibility toggle is entirely contained with
     ```
     When `showPassword` is `true`, the input type becomes `text`, revealing the password. When `false`, it reverts to `password`, masking the input.
 4.  **Toggle Button:** A `<button>` element was added directly adjacent to the password input field, within the same flex container.
-    - `type="button"`: This is crucial to prevent the button from triggering a form submission when clicked, ensuring it only serves its intended toggle function.
-    - `onClick={() => setShowPassword((v) => !v)}`: This handler toggles the `showPassword` state, which in turn updates the input's `type` attribute and re-renders the appropriate icon.
-    - **Accessibility:** `aria-label` and `aria-pressed` attributes were included to provide semantic information for assistive technologies:
-        - `aria-label={showPassword ? "Hide password" : "Show password"}` dynamically describes the button's action.
-        - `aria-pressed={showPassword}` indicates whether the toggle is currently active (password visible).
-    - **Conditional Icon Rendering:** The content of the button conditionally renders either the `EyeOff` icon (when `showPassword` is `true`, indicating the password is visible and can be hidden) or the `Eye` icon (when `showPassword` is `false`, indicating the password is hidden and can be shown).
-    - **Styling:** Tailwind CSS classes were applied for layout (`shrink-0`), appearance (`rounded`, `text-(--color-text-muted)`, `hover:text-(--color-text-primary)`), and focus indication (`focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:outline-none`).
+    *   `type="button"`: This is crucial to prevent the button from triggering a form submission when clicked, ensuring it only serves its intended toggle function.
+    *   `onClick={() => setShowPassword((v) => !v)}`: This handler toggles the `showPassword` state, which in turn updates the input's `type` attribute and re-renders the appropriate icon.
+    *   **Accessibility:** `aria-label` and `aria-pressed` attributes were included to provide semantic information for assistive technologies:
+        *   `aria-label={showPassword ? "Hide password" : "Show password"}` dynamically describes the button's action.
+        *   `aria-pressed={showPassword}` indicates whether the toggle is currently active (password visible).
+    *   **Conditional Icon Rendering:** The content of the button conditionally renders either the `EyeOff` icon (when `showPassword` is `true`, indicating the password is visible and can be hidden) or the `Eye` icon (when `showPassword` is `false`, indicating the password is hidden and can be shown).
+    *   **Styling:** Tailwind CSS classes were applied for layout (`shrink-0`), appearance (`rounded`, `text-(--color-text-muted)`, `hover:text-(--color-text-primary)`), and focus indication (`focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:outline-none`).
 
 This approach ensures that the password visibility toggle is a client-side UI enhancement that does not interfere with the existing login logic, form validation, or backend communication.
 
@@ -75,19 +75,22 @@ To re-implement a password visibility toggle similar to this, follow these steps
     />
     ```
 5.  **Add Toggle Button:** Place a `<button>` element immediately next to your password input, typically within the same container (e.g., a `div` with `flex` display).
-    - Ensure `type="button"` to prevent form submission.
-    - Attach an `onClick` handler to toggle the state.
-    - Conditionally render the appropriate icon based on `showPassword`.
-    - Add accessibility attributes.
+    *   Ensure `type="button"` to prevent form submission.
+    *   Attach an `onClick` handler to toggle the state.
+    *   Conditionally render the appropriate icon based on `showPassword`.
+    *   Add accessibility attributes.
     ```html
-    <button type="button" onClick="{()" ="">
-        setShowPassword((prev) => !prev)} aria-label={showPassword ? "Hide password" : "Show
-        password"} aria-pressed={showPassword} className="shrink-0 rounded text-(--color-text-muted)
-        transition hover:text-(--color-text-primary) focus-visible:ring-2
-        focus-visible:ring-emerald-500 focus-visible:outline-none" > {showPassword ? (
-        <EyeOff className="h-5 w-5" />
+    <button
+        type="button"
+        onClick={() => setShowPassword((prev) => !prev)}
+        aria-label={showPassword ? "Hide password" : "Show password"}
+        aria-pressed={showPassword}
+        className="shrink-0 rounded text-(--color-text-muted) transition hover:text-(--color-text-primary) focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:outline-none"
+    >
+        {showPassword ? (
+            <EyeOff className="h-5 w-5" />
         ) : (
-        <Eye className="h-5 w-5" />
+            <Eye className="h-5 w-5" />
         )}
     </button>
     ```
@@ -97,27 +100,27 @@ To re-implement a password visibility toggle similar to this, follow these steps
 
 This change has a minimal and localized impact on the overall SahiDawa system architecture.
 
-- **Frontend-Only Enhancement:** The modification is purely a client-side UI enhancement within the `apps/web` Next.js application. It does not affect our backend services, API contracts, database schema, or core business logic for authentication.
-- **Improved UX:** It significantly improves the user experience for a critical interaction point (login), potentially reducing user errors and support requests related to login failures.
-- **No New Dependencies:** By leveraging existing `lucide-react` imports and standard React/HTML patterns, we avoided introducing any new external libraries or complex frameworks, maintaining our current dependency footprint.
-- **Accessibility Standard:** The inclusion of `aria-label` and `aria-pressed` sets a good precedent for ensuring new UI features are accessible by design, aligning with our commitment to an inclusive platform.
-- **Future Development:** This pattern can be easily replicated for other input fields requiring similar visibility toggles (e.g., password confirmation fields, sensitive data entry).
+*   **Frontend-Only Enhancement:** The modification is purely a client-side UI enhancement within the `apps/web` Next.js application. It does not affect our backend services, API contracts, database schema, or core business logic for authentication.
+*   **Improved UX:** It significantly improves the user experience for a critical interaction point (login), potentially reducing user errors and support requests related to login failures.
+*   **No New Dependencies:** By leveraging existing `lucide-react` imports and standard React/HTML patterns, we avoided introducing any new external libraries or complex frameworks, maintaining our current dependency footprint.
+*   **Accessibility Standard:** The inclusion of `aria-label` and `aria-pressed` sets a good precedent for ensuring new UI features are accessible by design, aligning with our commitment to an inclusive platform.
+*   **Future Development:** This pattern can be easily replicated for other input fields requiring similar visibility toggles (e.g., password confirmation fields, sensitive data entry).
 
 ## Testing & Verification
 
 The changes introduced by this PR were verified through manual testing, as indicated by the "Proof of Work" screenshots provided in the PR description.
 
 1.  **Functional Verification:**
-    - We confirmed that navigating to the login page (`/login`) correctly displays the password input field with the new eye icon.
-    - Clicking the eye icon successfully toggles the `type` attribute of the password input between `password` and `text`, visually revealing and masking the entered characters.
-    - The icon itself correctly changes between `Eye` and `EyeOff` states corresponding to the password visibility.
-    - The existing login functionality (entering credentials and submitting the form) remains unaffected by the presence and interaction of the toggle.
-    - Form validation messages (if any) continue to display correctly.
+    *   We confirmed that navigating to the login page (`/login`) correctly displays the password input field with the new eye icon.
+    *   Clicking the eye icon successfully toggles the `type` attribute of the password input between `password` and `text`, visually revealing and masking the entered characters.
+    *   The icon itself correctly changes between `Eye` and `EyeOff` states corresponding to the password visibility.
+    *   The existing login functionality (entering credentials and submitting the form) remains unaffected by the presence and interaction of the toggle.
+    *   Form validation messages (if any) continue to display correctly.
 2.  **UI/UX Verification:**
-    - The eye icon is correctly positioned within the password input field, without overlapping text or other elements.
-    - The styling (colors, hover effects, focus states) of the toggle button is consistent with our design system.
+    *   The eye icon is correctly positioned within the password input field, without overlapping text or other elements.
+    *   The styling (colors, hover effects, focus states) of the toggle button is consistent with our design system.
 3.  **Edge Cases Considered (Implicitly/Explicitly):**
-    - **Empty Password Field:** The toggle functions correctly even when the password field is empty.
-    - **Typing and Toggling:** Users can type, toggle visibility, continue typing, and toggle again, with the input state preserving correctly.
-    - **Keyboard Navigation:** The toggle button is a standard HTML `<button>`, making it inherently focusable via keyboard (`Tab` key) and activatable (`Enter`/`Space` key), ensuring basic keyboard accessibility.
-    - **Screen Reader Compatibility:** The `aria-label` and `aria-pressed` attributes provide semantic information to screen readers, enhancing accessibility for visually impaired users.
+    *   **Empty Password Field:** The toggle functions correctly even when the password field is empty.
+    *   **Typing and Toggling:** Users can type, toggle visibility, continue typing, and toggle again, with the input state preserving correctly.
+    *   **Keyboard Navigation:** The toggle button is a standard HTML `<button>`, making it inherently focusable via keyboard (`Tab` key) and activatable (`Enter`/`Space` key), ensuring basic keyboard accessibility.
+    *   **Screen Reader Compatibility:** The `aria-label` and `aria-pressed` attributes provide semantic information to screen readers, enhancing accessibility for visually impaired users.

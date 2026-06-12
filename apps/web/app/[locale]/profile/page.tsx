@@ -191,8 +191,8 @@ export default function ProfilePage() {
                             </button>
                         )}
 
-                        <Link
-                            href="/settings"
+                        <button
+                            type="button"
                             className="flex w-full items-center justify-between p-5 transition-colors hover:bg-(--color-surface-muted)"
                         >
                             <div className="flex items-center gap-3">
@@ -204,7 +204,7 @@ export default function ProfilePage() {
                             </div>
 
                             <ChevronRight size={18} className="text-(--color-text-muted)" />
-                        </Link>
+                        </button>
 
                         <button
                             type="button"
